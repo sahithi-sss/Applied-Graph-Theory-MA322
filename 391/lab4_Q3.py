@@ -5,7 +5,7 @@ class Solution():
         ROWS, COLS = len(grid), len(grid[0])
         pq = []
         pq.append((0, 0, 0, False)) # path length, r, c, has_broken
-        visit = {(0, 0, False)}
+        visit = {(0, 0, False)} #r,c,flag
 
         while pq:
             path_len, row, col, is_broken = heapq.heappop(pq)
