@@ -1,0 +1,46 @@
+| **Aspect**                  | **Algorithm 1: Maximal Matching 2-Approximation**                                                           | **Algorithm 2: Greedy Degree Heuristic**                                                                             |           |    |                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | -- | ------------------------------------------------------------------------------------------ |
+| **Idea**                    | Pick edges greedily such that no two chosen edges share a vertex; add *both* endpoints to the vertex cover. | Repeatedly choose the vertex with the **maximum degree**, add it to the cover, and delete all its incident edges.    |           |    |                                                                                            |
+| **Guarantee**               | Always produces a **2-approximation** (provable upper bound):  (                                            | C                                                                                                                    | ≤ 2 × OPT | ). | **No guaranteed ratio** — purely heuristic; can be better or worse depending on the graph. |
+| **Determinism**             | Deterministic once edge order is fixed.                                                                     | Can behave differently depending on degree ties.                                                                     |           |    |                                                                                            |
+| **Runtime**                 | (O(m)) — linear in number of edges.                                                                         | (O((n+m)\log n)) due to heap updates.                                                                                |           |    |                                                                                            |
+| **Result size (empirical)** | Usually ≤ 2 × OPT, but not smaller — tends to overshoot a bit.                                              | Often smaller in practice, but sometimes much larger (worst case).                                                   |           |    |                                                                                            |
+| **When it excels**          | When you want **predictable performance and guarantees** — works uniformly on all graphs.                   | When you want **fast practical results** on sparse or real-world graphs where high-degree vertices cover many edges. |           |    |                                                                                            |
+| **When it struggles**       | On dense graphs, it may pick too many vertices (since each edge adds both endpoints).                       | On graphs with uniform degree (e.g., cycles, grids), greedy may not help — might remove too few edges per vertex.    |           |    |                                                                                            |
+| **Guarantee type**          | Theoretical (2-approximation).                                                                              | Empirical (heuristic).                                                                                               |           |    |                                                                                            |
+
+
+
+| Graph Type                                    | Greedy Degree                                     | 2-Approximation                       |
+| --------------------------------------------- | ------------------------------------------------- | ------------------------------------- |
+| **Sparse random (p ≈ 0.1)**                   | Often smaller cover, but not always optimal       | Slightly larger cover (≈ 1.8–2 × OPT) |
+| **Dense (p ≈ 0.8)**                           | Might behave worse (removes many but still large) | Still ≤ 2 × OPT, predictable          |
+| **Scale-free / social networks**              | Very effective — small cover                      | Predictable but suboptimal            |
+| **Small / structured graphs (cycles, grids)** | Can make poor picks                               | More stable result                    |
+
+
+
+
+🔹 Algorithm 1 — Maximal Matching 2-Approximation
+
+Why it works:
+Every edge in a matching requires at least one vertex in any vertex cover →
+so OPT ≥ |M|.
+You add 2 vertices per edge in M, so |C| = 2|M| ≤ 2 × OPT.
+
+When good:
+Works best when graph structure is irregular — the matching will be fairly small compared to total vertices.
+
+When bad:
+Dense graphs: each edge “forces” you to add both endpoints → cover becomes unnecessarily large.
+
+🔹 Algorithm 2 — Greedy Degree Heuristic
+
+Why it works (intuitively):
+High-degree vertices “cover” many edges at once; by removing them early, we eliminate large portions of the graph quickly.
+
+When good:
+Works very well on power-law graphs, social networks, web graphs, or any structure with “hub” vertices.
+
+When bad:
+Uniform-degree graphs (like cycles or regular lattices) — removing any vertex removes roughly the same number of edges, so it may make poor choices.
